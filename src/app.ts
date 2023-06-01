@@ -9,7 +9,6 @@ import cookieParser from "cookie-parser";
 import { PostgresDbConfig } from "./infrastructure/database/postgres/db-postgres.config";
 import { errorHandler } from "./shared/middlewares/error.middleware";
 import { notFoundHandler } from "./shared/middlewares/not-found.middleware";
-import { checkJwt } from "./shared/middlewares/authz.middleware";
 import categoryRouter from "./presentation/routes/category.route";
 import subCategoryRouter from "./presentation/routes/sub-category.route";
 import orderRouter from "./presentation/routes/order.route";
@@ -42,10 +41,10 @@ app.use(
 );
 app.use(helmet());
 app.use(
-    cors({
-        origin: "*",
-        credentials: true,
-    })
+  cors({
+    origin: "*",
+    credentials: true,
+  })
 );
 app.use(
   session({
@@ -61,24 +60,17 @@ const db = new PostgresDbConfig();
 db.connection();
 
 //routes
-// app.get("/", function (req, res) {
-//   res.sendFile(path.join(__dirname, "../public/index.html"));
-// });
 app.get("/api", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
-app.use('/api/categories', checkJwt, categoryRouter);
-app.use('/api/sub-categories', checkJwt, subCategoryRouter);
-app.use('/api/users', checkJwt, userRouter);
-app.use('/api/orders', checkJwt, orderRouter);
-app.use('/api/payments', checkJwt, paymentRouter);
-app.use('/api/reviews', checkJwt, reviewRouter);
-app.use('/api/products', checkJwt, productRouter);
-
-app.get("/api/private", checkJwt, (req, res) => {
-  res.send("This is a private route, authenicate before you can see it");
-});
+app.use("/api/categories",categoryRouter);
+app.use("/api/sub-categories", subCategoryRouter);
+app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
+app.use("/api/payments", paymentRouter);
+app.use("/api/reviews", reviewRouter);
+app.use("/api/products", productRouter);
 
 // middleware interceptions
 app.use(errorHandler);

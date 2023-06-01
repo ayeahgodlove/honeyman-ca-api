@@ -53,7 +53,7 @@ export class CategoriesController {
 
   async getAll(
     req: Request,
-    res: Response<ICategoryResponse>
+    res: Response<any>
   ): Promise<void> {
     try {
 
@@ -82,6 +82,7 @@ export class CategoriesController {
       const id = req.params.id;
 
       const category = await categoryUseCase.getCategoryById(id);
+      console.log(category)
       
       if (!category) {
         throw new NotFoundException("Category", id);

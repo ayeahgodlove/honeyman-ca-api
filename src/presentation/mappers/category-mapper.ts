@@ -8,10 +8,11 @@ export class CategoryMapper {
     const categoryDTO: ICategory = {
         id: `${category.id}`,
         name: category.name,
+        slug: category.slug,
+        description: category.description,
         createdAt: category.createdAt,
         updatedAt: category.updatedAt,
-        slug: category.slug,
-        description: category.description
+        // deletedAt: category.deletedAt
     };
     return categoryDTO;
   }
