@@ -1,6 +1,6 @@
-import { Table, Model, Column, DataType, HasMany, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Table, Model, Column, DataType, BelongsTo, ForeignKey } from "sequelize-typescript";
 import { Product } from "./product";
-import { User } from "./user";
+import { IProductImage } from "../../domain/models/product-image";
 
 // shortDescription: string;
 
@@ -10,7 +10,7 @@ import { User } from "./user";
   tableName: "product_image",
   modelName: "ProductImage"
 })
-export class ProductImage extends Model<ProductImage> {
+export class ProductImage extends Model<IProductImage> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,

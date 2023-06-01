@@ -10,6 +10,7 @@ import {
 } from "sequelize-typescript";
 import { Product } from "./product";
 import { User } from "./user";
+import { IOrder } from "../../domain/models/order";
 
 @Table({
   timestamps: true,
@@ -17,7 +18,7 @@ import { User } from "./user";
   tableName: "order",
   modelName: "Order"
 })
-export class Order extends Model {
+export class Order extends Model<IOrder> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,

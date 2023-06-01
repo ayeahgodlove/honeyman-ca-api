@@ -14,6 +14,7 @@ import { SubCategory } from "./sub-category";
 import { uuid } from "uuidv4";
 import { ProductImage } from "./product-image";
 import { Review } from "./review";
+import { IProduct } from "../../domain/models/product";
 
 @Table({
   timestamps: true,
@@ -21,7 +22,7 @@ import { Review } from "./review";
   tableName: "product",
   modelName: "Product"
 })
-export class Product extends Model {
+export class Product extends Model<IProduct> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,

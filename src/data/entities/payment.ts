@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import { User } from "./user";
 import { Order } from "./order";
+import { IPayment } from "../../domain/models/payment";
 
 @Table({
   timestamps: true,
@@ -15,7 +16,7 @@ import { Order } from "./order";
   tableName: "payment",
   modelName: "Payment"
 })
-export class Payment extends Model {
+export class Payment extends Model<IPayment> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,

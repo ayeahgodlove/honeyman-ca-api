@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import { Category } from "./category";
 import { Product } from "./product";
+import { ISubCategory } from "../../domain/models/category";
 
 @Table({
   timestamps: true,
@@ -16,7 +17,7 @@ import { Product } from "./product";
   tableName: "sub_category",
   modelName: "SubCategory"
 })
-export class SubCategory extends Model {
+export class SubCategory extends Model<ISubCategory> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,

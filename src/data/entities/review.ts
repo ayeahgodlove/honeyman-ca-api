@@ -1,6 +1,7 @@
 import { Table, Model, Column, DataType, HasMany, BelongsTo, ForeignKey } from "sequelize-typescript";
 import { Product } from "./product";
 import { User } from "./user";
+import { IReview } from "../../domain/models/review";
 
 @Table({
   timestamps: true,
@@ -8,7 +9,7 @@ import { User } from "./user";
   tableName: "review",
   modelName: "Review"
 })
-export class Review extends Model<Review> {
+export class Review extends Model<IReview> {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
