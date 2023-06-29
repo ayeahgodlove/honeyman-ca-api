@@ -68,7 +68,7 @@ export class CategoryRepository implements ICategoryRepository {
      * returns void
      */
     async update(category: ICategory): Promise<Category> {
-      const {id, name, description, updatedAt} = category;
+      const {id, name, description} = category;
       try {
         const categoryItem: any = await Category.findByPk(id);
         return await categoryItem?.update({
@@ -76,7 +76,6 @@ export class CategoryRepository implements ICategoryRepository {
           name,
           slug: slugify(name, {lower: true, replacement: "-"}),
           description,
-          updatedAt,
         });
       } catch (error) {
         throw error;

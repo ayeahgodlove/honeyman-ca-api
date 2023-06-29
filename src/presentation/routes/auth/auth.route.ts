@@ -48,11 +48,10 @@ authRoutes.post(
   Passport.authenticate("local-auth"),
   (req, res) => {
     try {
-
       res.status(200).json({
         success: true,
         message: "Login Successfully!",
-        data: req.user
+        data: req.user,
       });
     } catch (error) {
       res.status(500).json({
@@ -70,11 +69,22 @@ authRoutes.get("/auth/failure", (req, res) => {
   });
 });
 
-authRoutes.get("/auth/logout", (req, res) => {
-  req.logout(() => {
-    res.send("Logged out successfully!");
+authRoutes.get("/auth/logout", (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
   });
 });
 
+authRoutes.get("/auth/logout", function (req, res, next) {
+  if (req.user) {
+    req.session.destroy((err) => next(err));
+    res.redirect("/");
+  } else {
+    res.redirect("/");
+  }
+});
 
 export { authRoutes };

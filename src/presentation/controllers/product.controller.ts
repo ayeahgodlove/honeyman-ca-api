@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IProduct,
   IProductResponse,
+  emptyProduct,
 } from "../../domain/models/product";
 import { ProductUseCase } from "../../domain/usecases/product.usecase";
 import slugify from "slugify";
@@ -32,10 +34,9 @@ export class ProductsController {
       try {
         
         const productResponse = await productUseCase.createProduct(dto.toData());
-        const productDTO = productMapper.toDTO(productResponse) //convert entity to DTO
   
         res.status(201).json({
-          data: productResponse as any,
+          data: productResponse.toJSON<IProduct>(),
           message: "Product created Successfully!",
           validationErrors: [],
           success: true,
@@ -53,17 +54,13 @@ export class ProductsController {
 
   async getAll(
     req: Request,
-    res: Response<IProductResponse>
+    res: Response<IProduct[] | IProductResponse>
   ): Promise<void> {
     try {
 
-      const categories = await productUseCase.getAll();
-      res.json({
-        data: categories as any,
-        message: "Success",
-        validationErrors: [],
-        success: true,
-      });
+      const products = await productUseCase.getAll();
+      const productsDTO = productMapper.toDTOs(products);
+      res.json(productsDTO);
     } catch (error: any) {
       res.status(400).json({
         data: null,
@@ -134,17 +131,19 @@ export class ProductsController {
         product.categoryId = dto.categoryId;
         product.subCategoryId = dto.subCategoryId;
         product.quantity = dto.quantity;
-        product.price = dto.price;
-        product.slug =  slugify(product.name, {lower: true, replacement: "-"});
-        product.updatedAt = new Date();
+        product.amount = dto.amount;
   
-        const productDTO1 = productMapper.toDTO(product)
+        const obj: IProduct = {
+          ...req.body,
+          ...product, 
+          id: id,
+        };
   
-        const updatedProduct = await productUseCase.updateProduct(dto.toUpdateData(productDTO1));
-        const productDTO2 = productMapper.toDTO(updatedProduct);
+        const updatedProduct = await productUseCase.updateProduct(obj);
+        const productDTO = productMapper.toDTO(updatedProduct);
   
         res.json({
-          data: productDTO2,
+          data: productDTO,
           message: "Product Updated Successfully!",
           validationErrors: [],
           success: true,

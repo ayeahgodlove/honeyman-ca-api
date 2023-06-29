@@ -6,8 +6,6 @@ export interface IPayment {
   orderId: string;
   amount: number;
   status: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export const emptyPayment: IPayment = {
@@ -16,8 +14,6 @@ export const emptyPayment: IPayment = {
   orderId: "",
   amount: 0,
   status: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
 };
 
 export interface IPaymentResponse extends IBaseResponse {

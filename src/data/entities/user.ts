@@ -28,7 +28,14 @@ export class User extends Model<IUser> {
     allowNull: false,
     unique: true,
   })
-  fullname!: string;
+  firstname!: string;
+
+  @Column({
+    type: DataType.STRING(128),
+    allowNull: false,
+    unique: true,
+  })
+  lastname!: string;
 
   @Column({
     type: DataType.STRING(128),
@@ -45,23 +52,15 @@ export class User extends Model<IUser> {
   password!: string;
 
   @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
+    type: DataType.STRING(255),
+    allowNull: true,
   })
   address!: string;
-
+  
   @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
+    type: DataType.STRING(13),
   })
-  role!: string;
-
-  @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
+  phoneNumber!: string;
 
   @HasMany(() => Order)
   order!: Order[];

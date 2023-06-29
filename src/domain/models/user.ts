@@ -3,30 +3,26 @@ import { IBaseResponse } from "./base-response";
 export interface IUser {
   id: string;
   username: string;
-  slug: string;
-  fullname: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
   address: string;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
+  phoneNumber: string;
 }
 
 export const emptyUser: IUser = {
   id: "",
   username: "",
-  slug: "",
-  fullname: "",
+  firstname: "",
+  lastname: "",
   email: "",
   password: "",
   address: "",
-  role: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  phoneNumber: "",
 };
 
 export interface IUserResponse extends IBaseResponse {
-  data: IUser | null;
-  token?: string
+  data: IUser | null | IUser[];
+  token?: string;
 }

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IUser,
   IUserResponse,
+  emptyUser,
 } from "../../domain/models/user";
 import { UserUseCase } from "../../domain/usecases/user.usecase";
 import slugify from "slugify";
@@ -36,7 +38,7 @@ export class UsersController {
         const userResponse = await userUseCase.createUser(dto.toData());
   
         res.status(201).json({
-          data: userResponse as any,
+          data: userResponse.toJSON<IUser>(),
           message: "User created Successfully!",
           validationErrors: [],
           success: true,
@@ -54,17 +56,13 @@ export class UsersController {
 
   async getAll(
     req: Request,
-    res: Response<IUserResponse>
+    res: Response<IUser[] |IUserResponse>
   ): Promise<void> {
     try {
 
-      const categories = await userUseCase.getAll();
-      res.json({
-        data: categories as any,
-        message: "Success",
-        validationErrors: [],
-        success: true,
-      });
+      const users = await userUseCase.getAll();
+      const usersDTO = userMapper.toDTOs(users);
+      res.json(usersDTO);
     } catch (error: any) {
       res.status(400).json({
         data: null,
@@ -130,21 +128,26 @@ export class UsersController {
         }
   
         user.username = dto.username;
-        user.fullname = dto.fullname;
-        user.address = dto.address;
-        user.role = dto.role;
+        user.firstname = dto.firstname;
+        // user.address = dto.address;
+        user.lastname = dto.lastname;
         user.email = dto.email;
         user.password = dto.password;
-        user.slug =  slugify(user.fullname, {lower: true, replacement: "-"});
+        user.phoneNumber =  dto.phoneNumber;
         user.updatedAt = new Date();
   
-        const userDTO1 = userMapper.toDTO(user)
+        const obj: IUser = {
+          ...emptyUser,
+          ...req.body,
+          ...user,
+          id: id,
+        };
   
-        const updatedUser = await userUseCase.updateUser(dto.toUpdateData(userDTO1));
-        const userDTO2 = userMapper.toDTO(updatedUser);
+        const updatedUser = await userUseCase.updateUser(obj);
+        const userDTO = userMapper.toDTO(updatedUser);
   
         res.json({
-          data: userDTO2,
+          data: userDTO,
           message: "User Updated Successfully!",
           validationErrors: [],
           success: true,

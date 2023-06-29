@@ -7,8 +7,8 @@ const subCategoryController = new SubCategoriesController();
 
 const subCategoryRouter = Router();
 
-subCategoryRouter.get('',isAuthenticatedMiddleware, subCategoryController.getAll);
-subCategoryRouter.get('/:id',isAuthenticatedMiddleware, subCategoryController.getSubCategoryById);
+subCategoryRouter.get('', subCategoryController.getAll);
+subCategoryRouter.get('/:id', subCategoryController.getSubCategoryById);
 subCategoryRouter.post('',isAuthenticatedMiddleware, subCategoryController.createSubCategory);
 subCategoryRouter.put('/:id',isAuthenticatedMiddleware, subCategoryController.updateSubCategory);
 subCategoryRouter.delete('/:id',isAuthenticatedMiddleware, subCategoryController.deleteSubCategory);

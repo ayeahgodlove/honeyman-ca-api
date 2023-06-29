@@ -6,8 +6,6 @@ export interface IReview {
   userId: string;
   productId: string;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export const emptyReview: IReview = {
@@ -16,8 +14,6 @@ export const emptyReview: IReview = {
   userId: "",
   productId: "",
   description: "",
-  createdAt: new Date(),
-  updatedAt: new Date(),
 };
 
 export interface IReviewResponse extends IBaseResponse {

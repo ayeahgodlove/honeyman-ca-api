@@ -12,7 +12,11 @@ export class UserRequestDto {
 
   @IsNotEmpty()
   @IsString()
-  fullname: string;
+  firstname: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastname: string;
 
   @IsNotEmpty()
   @IsEmail()
@@ -20,11 +24,7 @@ export class UserRequestDto {
 
   @IsNotEmpty()
   @IsString()
-  address: string;
-
-  @IsNotEmpty()
-  @IsString()
-  role: string;
+  phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
@@ -33,23 +33,22 @@ export class UserRequestDto {
 
   constructor(data: IUser) {
     this.username = data.username;
-    this.fullname = data.fullname;
+    this.firstname = data.firstname;
     this.email = data.email;
-    this.role = data.role;
-    this.address = data.address;
+    this.lastname = data.lastname;
     this.password = data.password;
+    this.phoneNumber = data.phoneNumber
   }
 
   toData(): IUser {
     return {
       ...emptyUser,
       id: v4(),
-      slug:  slugify(this.fullname, {lower: true, replacement: "-"}),
       username: this.username,
-      fullname: this.fullname,
+      firstname: this.firstname,
+      lastname: this.lastname,
       email: this.email,
-      role: this.role,
-      address: this.address,
+      phoneNumber: this.phoneNumber,
       password: this.password
     };
   }
@@ -57,15 +56,13 @@ export class UserRequestDto {
   toUpdateData(data: IUser): IUser {
     return {
       id: data.id,
-      slug: data.slug,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      firstname: data.firstname,
+      lastname: data.lastname,
       username: data.username,
-      fullname: data.fullname,
+      phoneNumber: data.phoneNumber,
       address: data.address,
       email: data.email,
       password: data.password,
-      role: data.role
     }
   }
 }

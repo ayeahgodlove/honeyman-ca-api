@@ -60,10 +60,18 @@ export class Product extends Model<IProduct> {
   name!: string;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.STRING(128),
     allowNull: false,
+    unique: true,
   })
-  price!: number;
+  slug!: string;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: false,
+    unique: false
+  })
+  amount!: number;
 
   @Column({
     type: DataType.TEXT,
@@ -85,13 +93,6 @@ export class Product extends Model<IProduct> {
     unique: true,
   })
   quantity!: string;
-
-  @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
 
   // one-to-many relationships
   @HasMany(() => ProductImage)

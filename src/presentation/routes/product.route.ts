@@ -7,8 +7,8 @@ const productController = new ProductsController();
 
 const productRouter = Router();
 
-productRouter.get('',isAuthenticatedMiddleware, productController.getAll);
-productRouter.get('/:id',isAuthenticatedMiddleware, productController.getProductById);
+productRouter.get('', productController.getAll);
+productRouter.get('/:id', productController.getProductById);
 productRouter.post('',isAuthenticatedMiddleware, productController.createProduct);
 productRouter.put('/:id',isAuthenticatedMiddleware, productController.updateProduct);
 productRouter.delete('/:id',isAuthenticatedMiddleware, productController.deleteProduct);

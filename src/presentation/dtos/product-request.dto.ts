@@ -12,7 +12,7 @@ export class ProductRequestDto {
 
   @IsNotEmpty()
   @IsNumber()
-  price: number;
+  amount: number;
 
   @IsNotEmpty()
   @IsString()
@@ -38,7 +38,7 @@ export class ProductRequestDto {
 
   constructor(data: IProduct) {
     this.name = data.name;
-    this.price = data.price;
+    this.amount = data.amount;
     this.description = data.description;
     this.categoryId = data.categoryId;
     this.subCategoryId = data.subCategoryId;
@@ -50,12 +50,11 @@ export class ProductRequestDto {
     return {
       ...emptyProduct,
       id: v4(),
-      slug:  slugify(this.name, {lower: true, replacement: "-"}),
       name: this.name,
       description: this.description,
       categoryId: this.categoryId,
       subCategoryId: this.subCategoryId,
-      price: this.price,
+      amount: this.amount,
       shortDescription: this.shortDescription,
       quantity: this.quantity
     };
@@ -64,10 +63,7 @@ export class ProductRequestDto {
   toUpdateData(data: IProduct): IProduct {
     return {
       id: data.id,
-      slug: data.slug,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-      price: data.price,
+      amount: data.amount,
       name: data.name,
       description: data.description,
       categoryId: data.categoryId,

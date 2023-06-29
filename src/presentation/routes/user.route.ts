@@ -7,9 +7,9 @@ const userController = new UsersController();
 
 const userRouter = Router();
 
-userRouter.get("", isAuthenticatedMiddleware, userController.getAll);
-userRouter.get("/:id", isAuthenticatedMiddleware, userController.getUserById);
-userRouter.post("", isAuthenticatedMiddleware, userController.createUser);
+userRouter.get("", userController.getAll);
+userRouter.get("/:id", userController.getUserById);
+userRouter.post("", userController.createUser);
 userRouter.put("/:id", isAuthenticatedMiddleware, userController.updateUser);
 userRouter.delete("/:id", isAuthenticatedMiddleware, userController.deleteUser);
 

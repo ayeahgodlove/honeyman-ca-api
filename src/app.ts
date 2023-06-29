@@ -16,6 +16,7 @@ import userRouter from "./presentation/routes/user.route";
 import productRouter from "./presentation/routes/product.route";
 import reviewRouter from "./presentation/routes/review.route";
 import paymentRouter from "./presentation/routes/payment.route";
+import { authRoutes } from "./presentation/routes/auth/auth.route";
 
 dotenv.config();
 /**
@@ -58,6 +59,10 @@ app.use(cookieParser());
 
 const db = new PostgresDbConfig();
 db.connection();
+
+
+// authentication
+app.use("/", authRoutes);
 
 //routes
 app.get("/api", (req: Request, res: Response) => {

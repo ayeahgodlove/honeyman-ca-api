@@ -7,15 +7,13 @@ export class UserMapper {
   toDTO(user: User): IUser {
     const userDTO: IUser = {
         id: `${user.id}`,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        slug: user.slug,
         username: user.username,
-        fullname: user.fullname,
+        firstname: user.firstname,
         address: user.address,
         email: user.email,
         password: user.password,
-        role: user.role
+        lastname: user.lastname,
+        phoneNumber: user.phoneNumber
     };
     return userDTO;
   }
@@ -23,15 +21,13 @@ export class UserMapper {
     const _users = users.map(user => {
       const userDTO: IUser = {
         id: `${user.id}`,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        slug: user.slug,
+        firstname: user.firstname,
         username: user.username,
-        fullname: user.fullname,
+        lastname: user.lastname,
         address: user.address,
         email: user.email,
         password: user.password,
-        role: user.role
+        phoneNumber: user.phoneNumber
     };
 
       return userDTO
