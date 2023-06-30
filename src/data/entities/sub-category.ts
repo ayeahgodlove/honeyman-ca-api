@@ -43,14 +43,6 @@ export class SubCategory extends Model<ISubCategory> {
   name!: string;
 
   @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
-
-
-  @Column({
     type: DataType.TEXT,
     allowNull: false,
   })

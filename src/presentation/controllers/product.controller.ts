@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import {
   IProduct,
   IProductResponse,
-  emptyProduct,
 } from "../../domain/models/product";
 import { ProductUseCase } from "../../domain/usecases/product.usecase";
-import slugify from "slugify";
 import { ProductRepository } from "../../data/repositories/impl/product.repository";
 import { ProductMapper } from "../mappers/product-mapper";
 import { ProductRequestDto } from "../dtos/product-request.dto";

@@ -3,7 +3,6 @@
 import {  IsNotEmpty, IsString, Length } from "class-validator";
 import { ICategory, emptyCategory } from "../../domain/models/category";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 export class CategoryRequestDto {
   @IsNotEmpty()
@@ -24,7 +23,6 @@ export class CategoryRequestDto {
     return {
       ...emptyCategory,
       id: v4(),
-      slug:  slugify(this.name, {lower: true, replacement: "-"}),
       name: this.name,
       description: this.description,
     };
@@ -34,10 +32,7 @@ export class CategoryRequestDto {
     return {
       id: data.id,
       name: data.name,
-      slug: data.slug,
       description: data.description,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt
     }
   }
 }

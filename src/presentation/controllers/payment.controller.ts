@@ -3,7 +3,6 @@ import {
   IPaymentResponse,
 } from "../../domain/models/payment";
 import { PaymentUseCase } from "../../domain/usecases/payment.usecase";
-import slugify from "slugify";
 import { PaymentRepository } from "../../data/repositories/impl/payment.repository";
 import { PaymentMapper } from "../mappers/payment-mapper";
 import { PaymentRequestDto } from "../dtos/payment-request.dto";

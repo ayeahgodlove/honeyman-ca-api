@@ -8,9 +8,6 @@ export class SubCategoryMapper {
     const subCategoryDTO: ISubCategory = {
         id: `${subCategory.id}`,
         name: subCategory.name,
-        createdAt: subCategory.createdAt,
-        updatedAt: subCategory.updatedAt,
-        slug: subCategory.slug,
         description: subCategory.description,
         categoryId: subCategory.categoryId
     };
@@ -21,9 +18,6 @@ export class SubCategoryMapper {
       const subCategoryDTO: ISubCategory = {
         id: `${subCategory.id}`,
         name: subCategory.name,
-        createdAt: subCategory.createdAt,
-        updatedAt: subCategory.updatedAt,
-        slug: subCategory.slug,
         description: subCategory.description,
         categoryId: subCategory.categoryId
     };

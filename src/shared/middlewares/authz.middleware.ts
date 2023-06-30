@@ -2,11 +2,11 @@ import Passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import { Strategy as LocalStrategy } from "passport-local";
-
+import bcrypt from  "bcrypt";
 import { User } from "../../data/entities/user";
-import { validatePassword } from "../../domain/validators/password-validator";
 import { logger } from "../helper/logger";
 import slugify from "slugify";
+import { IUser } from "../../domain/models/user";
 
 Passport.serializeUser(function (user, cb) {
   cb(null, user);
@@ -31,13 +31,18 @@ Passport.use(
         if (!user) {
           return done(null, false, {message: 'Invalid username or password!'});
         }
-        const isValidPassword = await validatePassword(password);
-        if (!isValidPassword) {
+        const entity = user.toJSON<IUser>();
+        const hashedPassword = await bcrypt.compare(
+          password,
+          `${entity.password}`
+        );
+        if (hashedPassword) {
+          return done(null, user);
+        } else {
           return done(null, false, {
-            message: "Incorrect email or password",
+            message: "Incorrect phoneNumber or password",
           });
         }
-        return done(null, user);
       } catch (error) {
         return done(error);
       }

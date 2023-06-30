@@ -59,13 +59,6 @@ export class Payment extends Model<IPayment> {
   })
   status!: string;
 
-  @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
-
   @BelongsTo(() => User)
   user!: User;
   @BelongsTo(() => Order)

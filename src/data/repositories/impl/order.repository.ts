@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { Order } from "../../entities/order";
 import { IOrderRepository } from "../contracts/iorder.repository";
 import { IOrder } from "../../../domain/models/order";
@@ -76,7 +75,6 @@ export class OrderRepository implements IOrderRepository {
       total,
       status,
       orderNo,
-      updatedAt,
     } = order;
     try {
       const orderItem: any = await Order.findByPk(id);
@@ -88,8 +86,6 @@ export class OrderRepository implements IOrderRepository {
         total,
         status,
         orderNo,
-        slug: slugify(orderNo, { lower: true, replacement: "-" }),
-        updatedAt,
       });
     } catch (error) {
       throw error;

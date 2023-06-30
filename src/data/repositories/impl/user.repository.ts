@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { User } from "../../entities/user";
 import { IUserRepository } from "../contracts/iuser.repository";
 import { IUser } from "../../../domain/models/user";
@@ -68,19 +67,9 @@ export class UserRepository implements IUserRepository {
      * returns void
      */
     async update(user: IUser): Promise<User> {
-      const {id, address, email, fullname, password, role, username, updatedAt} = user;
       try {
-        const userItem: any = await User.findByPk(id);
-        return await userItem?.update({
-          id,
-          username,
-          fullname,
-          slug: slugify(fullname, {lower: true, replacement: "-"}),
-          address,
-          role,
-          password,
-          updatedAt,
-        });
+        const userItem: any = await User.findByPk(user.id);
+        return await userItem?.update(user);
       } catch (error) {
         throw error;
       }

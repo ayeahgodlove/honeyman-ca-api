@@ -1,9 +1,8 @@
 // src/presentation/dtos/ReviewRequestDto.ts
 
-import {  IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import {  IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { IReview, emptyReview } from "../../domain/models/review";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 // rating: number;
 export class ReviewRequestDto {
@@ -48,8 +47,6 @@ export class ReviewRequestDto {
       rating: data.rating,
       userId: data.userId,
       productId: data.productId,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt
     }
   }
 }

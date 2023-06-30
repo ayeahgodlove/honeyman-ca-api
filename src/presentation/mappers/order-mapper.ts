@@ -6,32 +6,30 @@ import { IOrder } from "../../domain/models/order";
 export class OrderMapper {
   toDTO(order: Order): IOrder {
     const orderDTO: IOrder = {
-        id: `${order.id}`,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
-        slug: order.slug,
-        orderNo: order.orderNo,
-        status: order.status,
-        total: order.total,
-        userId: order.userId
+      id: `${order.id}`,
+      orderNo: order.orderNo,
+      status: order.status,
+      total: order.total,
+      userId: order.userId,
+      productId: order.productId,
+      unitPrice: 0
     };
     return orderDTO;
   }
-  toDTOs(categories: Order[]): IOrder[] {
-    const _categories = categories.map(order => {
+  toDTOs(orders: Order[]): IOrder[] {
+    const _orders = orders.map((order) => {
       const orderDTO: IOrder = {
         id: `${order.id}`,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
-        slug: order.slug,
         orderNo: order.orderNo,
         status: order.status,
         total: order.total,
-        userId: order.userId
-    };
+        userId: order.userId,
+        productId: order.productId,
+        unitPrice: 0,
+      };
 
-      return orderDTO
-    })
-    return _categories;
+      return orderDTO;
+    });
+    return _orders;
   }
 }

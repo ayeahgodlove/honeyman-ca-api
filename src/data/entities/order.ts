@@ -5,8 +5,6 @@ import {
   ForeignKey,
   BelongsTo,
   DataType,
-  BelongsToMany,
-  HasMany
 } from "sequelize-typescript";
 import { Product } from "./product";
 import { User } from "./user";
@@ -72,13 +70,6 @@ export class Order extends Model<IOrder> {
     allowNull: false,
   })
   status!: string;
-
-  @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
 
   @BelongsTo(() => User)
   user!: User;

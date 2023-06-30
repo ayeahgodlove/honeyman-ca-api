@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { Review } from "../../entities/review";
 import { IReviewRepository } from "../contracts/ireview.repository";
 import { IReview } from "../../../domain/models/review";
@@ -54,7 +53,7 @@ export class ReviewRepository implements IReviewRepository {
      * returns void
      */
     async update(review: IReview): Promise<Review> {
-      const {id, rating, userId, productId, description, updatedAt} = review;
+      const {id, rating, userId, productId, description} = review;
       try {
         const reviewItem: any = await Review.findByPk(id);
         return await reviewItem?.update({
@@ -63,7 +62,6 @@ export class ReviewRepository implements IReviewRepository {
           userId,
           productId,
           description,
-          updatedAt,
         });
       } catch (error) {
         throw error;

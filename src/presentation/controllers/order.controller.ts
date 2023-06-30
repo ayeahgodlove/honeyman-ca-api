@@ -3,7 +3,6 @@ import {
   IOrderResponse,
 } from "../../domain/models/order";
 import { OrderUseCase } from "../../domain/usecases/order.usecase";
-import slugify from "slugify";
 import { OrderRepository } from "../../data/repositories/impl/order.repository";
 import { OrderMapper } from "../mappers/order-mapper";
 import { OrderRequestDto } from "../dtos/order-request.dto";
@@ -131,7 +130,6 @@ export class OrdersController {
         order.userId = dto.userId;
         order.total = dto.total;
         order.status = dto.status;
-        order.slug =  slugify(order.orderNo, {lower: true, replacement: "-"});
         order.updatedAt = new Date();
   
         const orderDTO1 = orderMapper.toDTO(order)

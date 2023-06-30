@@ -3,7 +3,6 @@ import {
   ICategoryResponse,
 } from "../../domain/models/category";
 import { CategoryUseCase } from "../../domain/usecases/category.usecase";
-import slugify from "slugify";
 import { CategoryRepository } from "../../data/repositories/impl/category.repository";
 import { CategoryMapper } from "../mappers/category-mapper";
 import { CategoryRequestDto } from "../dtos/category-request.dto";
@@ -131,7 +130,6 @@ export class CategoriesController {
   
         category.name = dto.name;
         category.description = dto.description;
-        category.slug =  slugify(category.name, {lower: true, replacement: "-"});
         category.updatedAt = new Date();
   
         const categoryDTO1 = categoryMapper.toDTO(category)

@@ -5,7 +5,6 @@ import {
   emptyUser,
 } from "../../domain/models/user";
 import { UserUseCase } from "../../domain/usecases/user.usecase";
-import slugify from "slugify";
 import { UserRepository } from "../../data/repositories/impl/user.repository";
 import { UserRequestDto } from "../dtos/user-request.dto";
 import { validate } from "class-validator";

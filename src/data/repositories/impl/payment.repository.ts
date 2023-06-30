@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { Payment } from "../../entities/payment";
 import { IPaymentRepository } from "../contracts/ipayment.repository";
 import { IPayment } from "../../../domain/models/payment";
@@ -68,7 +67,7 @@ export class PaymentRepository implements IPaymentRepository {
    * returns void
    */
   async update(payment: IPayment): Promise<Payment> {
-    const { id, amount, orderId, status, userId, updatedAt } = payment;
+    const { id, amount, orderId, status, userId } = payment;
     try {
       const paymentItem: any = await Payment.findByPk(id);
       return await paymentItem?.update({
@@ -77,7 +76,6 @@ export class PaymentRepository implements IPaymentRepository {
         orderId,
         userId,
         status,
-        updatedAt,
       });
     } catch (error) {
       throw error;

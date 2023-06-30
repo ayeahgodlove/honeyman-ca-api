@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
 import {
   ISubCategoryResponse,
-  emptySubCategory,
 } from "../../domain/models/category";
 import { SubCategoryUseCase } from "../../domain/usecases/sub-category.usecase";
-import slugify from "slugify";
-import { v4 } from "uuid";
 import { SubCategoryRepository } from "../../data/repositories/impl/sub-category.repository";
 import { SubCategoryMapper } from "../mappers/sub-category-mapper";
 import { validate } from "class-validator";

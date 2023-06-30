@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { Product } from "../../entities/product";
 import { IProductRepository } from "../contracts/iproduct.repository";
 import { IProduct } from "../../../domain/models/product";
@@ -71,26 +70,24 @@ export class ProductRepository implements IProductRepository {
     const {
       id,
       name,
-      price,
+      amount,
       shortDescription,
       description,
       categoryId,
       quantity,
       subCategoryId,
-      updatedAt,
     } = product;
     try {
       const productItem: any = await Product.findByPk(id);
       return await productItem?.update({
         id,
         name,
-        price,
+        amount,
         shortDescription,
         quantity,
         description,
         categoryId,
         subCategoryId,
-        updatedAt,
       });
     } catch (error) {
       throw error;

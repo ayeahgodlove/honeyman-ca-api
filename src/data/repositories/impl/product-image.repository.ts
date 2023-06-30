@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { ProductImage } from "../../entities/product-image";
 import { IProductImageRepository } from "../contracts/iproduct-image.repository";
 import { IProductImage } from "../../../domain/models/product-image";
@@ -68,18 +67,16 @@ export class ProductImageRepository implements IProductImageRepository {
    * returns void
    */
   async update(productImage: IProductImage): Promise<ProductImage> {
-    const { id, name, shortDescription, productId, url, updatedAt } =
+    const { id, name, shortDescription, productId, url } =
       productImage;
     try {
       const productImageItem: any = await ProductImage.findByPk(id);
       return await productImageItem?.update({
         id,
         name,
-        slug: slugify(name, { lower: true, replacement: "-" }),
         shortDescription,
         productId,
         url,
-        updatedAt,
       });
     } catch (error) {
       throw error;

@@ -3,8 +3,8 @@ import { IBaseResponse } from "./base-response";
 export interface IOrder {
   id: string;
   userId: string;
-  // productId: string;
-  // unitPrice: number;
+  productId: string;
+  unitPrice: number;
   total: number;
   status: string;
   orderNo: string;
@@ -13,8 +13,8 @@ export interface IOrder {
 export const emptyOrder: IOrder = {
   id: "",
   userId: "",
-  // productId: "",
-  // unitPrice: 0,
+  productId: "",
+  unitPrice: 0,
   total: 0,
   status: "",
   orderNo: "",

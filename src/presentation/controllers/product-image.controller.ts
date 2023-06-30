@@ -3,7 +3,6 @@ import {
   IProductImageResponse,
 } from "../../domain/models/product-image";
 import { ProductImageUseCase } from "../../domain/usecases/product-image.usecase";
-import slugify from "slugify";
 import { ProductImageRepository } from "../../data/repositories/impl/product-image.repository";
 import { ProductImageMapper } from "../mappers/product-image-mapper";
 import { ProductImageRequestDto } from "../dtos/product-image-request.dto";
@@ -132,7 +131,6 @@ export class CategoriesController {
         productImage.productId = dto.productId;
         productImage.shortDescription = dto.shortDescription;
         productImage.url = dto.url;
-        productImage.slug =  slugify(productImage.name, {lower: true, replacement: "-"});
         productImage.updatedAt = new Date();
   
         const productImageDTO1 = productImageMapper.toDTO(productImage)

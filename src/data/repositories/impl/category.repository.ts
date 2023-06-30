@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { Category } from "../../entities/category";
 import { ICategoryRepository } from "../contracts/icategory.repository";
 import { ICategory } from "../../../domain/models/category";
@@ -74,7 +73,6 @@ export class CategoryRepository implements ICategoryRepository {
         return await categoryItem?.update({
           id,
           name,
-          slug: slugify(name, {lower: true, replacement: "-"}),
           description,
         });
       } catch (error) {

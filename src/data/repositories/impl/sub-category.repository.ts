@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { SubCategory } from "../../entities/sub-category";
 import { ISubCategoryRepository } from "../contracts/isub-category.repository";
 import { ISubCategory } from "../../../domain/models/category";
@@ -68,16 +67,14 @@ export class SubCategoryRepository implements ISubCategoryRepository {
      * returns void
      */
     async update(subCategory: ISubCategory): Promise<SubCategory> {
-      const {id, name, description, updatedAt, categoryId} = subCategory;
+      const {id, name, description, categoryId} = subCategory;
       try {
         const subCategoryItem: any = await SubCategory.findByPk(id);
         return await subCategoryItem?.update({
           id,
           categoryId,
           name,
-          slug:  slugify(name, {lower: true, replacement: "-"}),
           description,
-          updatedAt,
         });
       } catch (error) {
         throw error;

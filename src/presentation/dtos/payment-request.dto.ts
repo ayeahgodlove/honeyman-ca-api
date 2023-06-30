@@ -3,7 +3,6 @@
 import {  IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 import { IPayment, emptyPayment } from "../../domain/models/payment";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 // status: string;
 export class PaymentRequestDto {
@@ -49,8 +48,6 @@ export class PaymentRequestDto {
       userId: data.userId,
       orderId: data.orderId,
       status: data.status,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt
     }
   }
 }

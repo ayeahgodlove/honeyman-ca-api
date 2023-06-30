@@ -3,7 +3,6 @@
 import {  IsNotEmpty, IsString, Length } from "class-validator";
 import { IProductImage, emptyProductImage } from "../../domain/models/product-image";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 export class ProductImageRequestDto {
   @IsNotEmpty()
@@ -34,7 +33,6 @@ export class ProductImageRequestDto {
     return {
       ...emptyProductImage,
       id: v4(),
-      slug:  slugify(this.name, {lower: true, replacement: "-"}),
       name: this.name,
       shortDescription: this.shortDescription,
       productId: this.productId,
@@ -46,12 +44,9 @@ export class ProductImageRequestDto {
     return {
       id: data.id,
       name: data.name,
-      slug: data.slug,
       shortDescription: this.shortDescription,
       productId: this.productId,
       url: this.url,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt
     }
   }
 }

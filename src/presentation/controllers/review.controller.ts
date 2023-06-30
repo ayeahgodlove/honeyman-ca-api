@@ -3,7 +3,6 @@ import {
   IReviewResponse,
 } from "../../domain/models/review";
 import { ReviewUseCase } from "../../domain/usecases/review.usecase";
-import slugify from "slugify";
 import { ReviewRepository } from "../../data/repositories/impl/review.repository";
 import { ReviewMapper } from "../mappers/review-mapper";
 import { ReviewRequestDto } from "../dtos/review-request.dto";

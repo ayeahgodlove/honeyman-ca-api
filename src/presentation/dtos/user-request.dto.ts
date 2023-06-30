@@ -3,7 +3,6 @@
 import {  IsNotEmpty, IsString, IsStrongPassword, IsEmail } from "class-validator";
 import { IUser, emptyUser } from "../../domain/models/user";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 export class UserRequestDto {
   @IsNotEmpty()

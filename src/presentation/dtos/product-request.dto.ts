@@ -3,7 +3,6 @@
 import {  IsNotEmpty, IsString, IsNumber } from "class-validator";
 import { IProduct, emptyProduct } from "../../domain/models/product";
 import { v4 } from "uuid";
-import slugify from "slugify";
 
 export class ProductRequestDto {
   @IsNotEmpty()

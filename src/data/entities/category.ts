@@ -1,7 +1,6 @@
 import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
 import { Product } from "./product";
 import { SubCategory } from "./sub-category";
-import { uuid } from "uuidv4";
 import { ICategory } from "../../domain/models/category";
 
 @Table({
@@ -24,13 +23,6 @@ export class Category extends Model<ICategory> {
     unique: true,
   })
   name!: string;
-
-  @Column({
-    type: DataType.STRING(128),
-    allowNull: false,
-    unique: true,
-  })
-  slug!: string;
 
   @Column({
     type: DataType.TEXT,

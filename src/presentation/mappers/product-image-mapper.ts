@@ -8,11 +8,8 @@ export class ProductImageMapper {
     const productImageDTO: IProductImage = {
       id: `${productImage.id}`,
       name: productImage.name,
-      createdAt: productImage.createdAt,
-      updatedAt: productImage.updatedAt,
       shortDescription: productImage.shortDescription,
       productId: productImage.productId,
-      slug: productImage.slug,
       url: productImage.url
     };
     return productImageDTO;
@@ -22,11 +19,8 @@ export class ProductImageMapper {
       const productImageDTO: IProductImage = {
         id: `${productImage.id}`,
         name: productImage.name,
-        createdAt: productImage.createdAt,
-        updatedAt: productImage.updatedAt,
         shortDescription: productImage.shortDescription,
         productId: productImage.productId,
-        slug: productImage.slug,
         url: productImage.url
     };
 
