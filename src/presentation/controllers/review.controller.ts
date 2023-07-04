@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IReview,
   IReviewResponse,
+  emptyReview,
 } from "../../domain/models/review";
 import { ReviewUseCase } from "../../domain/usecases/review.usecase";
 import { ReviewRepository } from "../../data/repositories/impl/review.repository";
@@ -31,10 +33,9 @@ export class ReviewsController {
       try {
         
         const reviewResponse = await reviewUseCase.createReview(dto.toData());
-        const reviewDTO = reviewMapper.toDTO(reviewResponse) //convert entity to DTO
   
         res.status(201).json({
-          data: reviewResponse as any,
+          data: reviewResponse.toJSON<IReview>(),
           message: "Review created Successfully!",
           validationErrors: [],
           success: true,
@@ -56,9 +57,10 @@ export class ReviewsController {
   ): Promise<void> {
     try {
 
-      const categories = await reviewUseCase.getAll();
+      const reviews = await reviewUseCase.getAll();
+      const reviewsDTO = reviewMapper.toDTOs(reviews);
       res.json({
-        data: categories as any,
+        data: reviewsDTO,
         message: "Success",
         validationErrors: [],
         success: true,
@@ -120,6 +122,12 @@ export class ReviewsController {
     else {
       try {
         const id = req.params.id;
+        const obj: IReview = {
+          ...emptyReview,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
       
         const review = await reviewUseCase.getReviewById(id);
         
@@ -127,19 +135,11 @@ export class ReviewsController {
           throw new NotFoundException("Review", id);
         }
   
-        review.rating = dto.rating;
-        review.userId = dto.userId;
-        review.productId = dto.productId;
-        review.description = dto.description;
-        review.updatedAt = new Date();
-  
-        const reviewDTO1 = reviewMapper.toDTO(review)
-  
-        const updatedReview = await reviewUseCase.updateReview(dto.toUpdateData(reviewDTO1));
-        const reviewDTO2 = reviewMapper.toDTO(updatedReview);
+        const updatedReview = await reviewUseCase.updateReview(obj);
+        const reviewDTO = reviewMapper.toDTO(updatedReview);
   
         res.json({
-          data: reviewDTO2,
+          data: reviewDTO,
           message: "Review Updated Successfully!",
           validationErrors: [],
           success: true,
@@ -168,12 +168,10 @@ export class ReviewsController {
           throw new NotFoundException("Review", id);
       }
 
-      const reviewDTO = reviewMapper.toDTO(review)
-
       await reviewUseCase.deleteReview(id);
 
       res.status(204).json({
-        message: `${reviewDTO.id}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null

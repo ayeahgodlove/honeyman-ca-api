@@ -21,5 +21,5 @@ export const emptyOrder: IOrder = {
 };
 
 export interface IOrderResponse extends IBaseResponse {
-  data: IOrder | null;
+  data: IOrder | null | IOrder[];
 }

@@ -2,7 +2,7 @@ import { User } from "../../entities/user";
 import { IUserRepository } from "../contracts/iuser.repository";
 import { IUser } from "../../../domain/models/user";
 import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
-
+import * as bcrypt from "bcrypt";
 export class UserRepository implements IUserRepository {
     /**
      *
@@ -15,8 +15,11 @@ export class UserRepository implements IUserRepository {
      * returns void
      */
     async create(user: IUser): Promise<User> {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      user.password = hashedPassword;
+
      try {
-       return await User.create<User>(user as any);
+       return await User.create<User>(user);
      } catch (error) {
        throw error;
      }

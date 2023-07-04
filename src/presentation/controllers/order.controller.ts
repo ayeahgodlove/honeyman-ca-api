@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IOrder,
   IOrderResponse,
+  emptyOrder,
 } from "../../domain/models/order";
 import { OrderUseCase } from "../../domain/usecases/order.usecase";
 import { OrderRepository } from "../../data/repositories/impl/order.repository";
@@ -33,7 +35,7 @@ export class OrdersController {
         const orderResponse = await orderUseCase.createOrder(dto.toData());
   
         res.status(201).json({
-          data: orderResponse as any,
+          data: orderResponse.toJSON<IOrder>(),
           message: "Order created Successfully!",
           validationErrors: [],
           success: true,
@@ -56,8 +58,10 @@ export class OrdersController {
     try {
 
       const orders = await orderUseCase.getAll();
+      const ordersDTO = orderMapper.toDTOs(orders);
+
       res.json({
-        data: orders as any,
+        data: ordersDTO,
         message: "Success",
         validationErrors: [],
         success: true,
@@ -119,6 +123,12 @@ export class OrdersController {
     else {
       try {
         const id = req.params.id;
+        const obj: IOrder = {
+          ...emptyOrder,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
       
         const order = await orderUseCase.getOrderById(id);
         
@@ -126,19 +136,12 @@ export class OrdersController {
           throw new NotFoundException("Order", id);
         }
   
-        order.orderNo = dto.orderNo;
-        order.userId = dto.userId;
-        order.total = dto.total;
-        order.status = dto.status;
-        order.updatedAt = new Date();
-  
-        const orderDTO1 = orderMapper.toDTO(order)
-  
-        const updatedOrder = await orderUseCase.updateOrder(dto.toUpdateData(orderDTO1));
-        const orderDTO2 = orderMapper.toDTO(updatedOrder);
+
+        const updatedOrder = await orderUseCase.updateOrder(obj);
+        const orderDto = orderMapper.toDTO(updatedOrder);
   
         res.json({
-          data: orderDTO2,
+          data: orderDto,
           message: "Order Updated Successfully!",
           validationErrors: [],
           success: true,
@@ -167,12 +170,10 @@ export class OrdersController {
           throw new NotFoundException("Order", id);
       }
 
-      const orderDTO = orderMapper.toDTO(order)
-
       await orderUseCase.deleteOrder(id);
 
       res.status(204).json({
-        message: `${orderDTO.orderNo}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null

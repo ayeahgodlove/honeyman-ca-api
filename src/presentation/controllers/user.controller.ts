@@ -32,8 +32,6 @@ export class UsersController {
     }
     else {
       try {
-        const hashPassword = await bcrypt.hash(req.body.password, 10);
-        dto.password = hashPassword;
         const userResponse = await userUseCase.createUser(dto.toData());
   
         res.status(201).json({
@@ -55,13 +53,19 @@ export class UsersController {
 
   async getAll(
     req: Request,
-    res: Response<IUser[] |IUserResponse>
+    res: Response<IUserResponse>
   ): Promise<void> {
     try {
 
       const users = await userUseCase.getAll();
       const usersDTO = userMapper.toDTOs(users);
-      res.json(usersDTO);
+
+      res.json({
+        data: usersDTO,
+        message: "Success",
+        validationErrors: [],
+        success: true,
+      });
     } catch (error: any) {
       res.status(400).json({
         data: null,
@@ -119,29 +123,20 @@ export class UsersController {
     else {
       try {
         const id = req.params.id;
-      
+
         const user = await userUseCase.getUserById(id);
         
         if (!user) {
           throw new NotFoundException("User", id);
         }
   
-        user.username = dto.username;
-        user.firstname = dto.firstname;
-        // user.address = dto.address;
-        user.lastname = dto.lastname;
-        user.email = dto.email;
-        user.password = dto.password;
-        user.phoneNumber =  dto.phoneNumber;
-        user.updatedAt = new Date();
-  
         const obj: IUser = {
           ...emptyUser,
           ...req.body,
+          ...dto,
           ...user,
           id: id,
         };
-  
         const updatedUser = await userUseCase.updateUser(obj);
         const userDTO = userMapper.toDTO(updatedUser);
   
@@ -180,7 +175,7 @@ export class UsersController {
       await userUseCase.deleteUser(id);
 
       res.status(204).json({
-        message: `${userDTO.username}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null

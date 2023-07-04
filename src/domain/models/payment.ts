@@ -17,5 +17,5 @@ export const emptyPayment: IPayment = {
 };
 
 export interface IPaymentResponse extends IBaseResponse {
-  data: IPayment | null;
+  data: IPayment | null | IPayment[];
 }

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  ISubCategory,
   ISubCategoryResponse,
+  emptySubCategory,
 } from "../../domain/models/category";
 import { SubCategoryUseCase } from "../../domain/usecases/sub-category.usecase";
 import { SubCategoryRepository } from "../../data/repositories/impl/sub-category.repository";
@@ -36,7 +38,7 @@ export class SubCategoriesController {
         const subCategoryResponse = await subCategoryUseCase.createSubCategory(dto.toData());
   
         res.status(201).json({
-          data: subCategoryResponse as any,
+          data: subCategoryResponse.toJSON<ISubCategory>(),
           message: "Sub Category created Successfully!",
           validationErrors: [],
           success: true,
@@ -60,7 +62,7 @@ export class SubCategoriesController {
       const subCategories = await subCategoryUseCase.getAll();
       const subCategoryDTOs = subCategoryMapper.toDTOs(subCategories);
       res.json({
-        data: subCategories as any,
+        data: subCategoryDTOs,
         message: "Success",
         validationErrors: [],
         success: true,
@@ -122,32 +124,24 @@ export class SubCategoriesController {
     else {
       try {
         const id = req.params.id;
+        const obj: ISubCategory = {
+          ...emptySubCategory,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
+
         const subCategory = await subCategoryUseCase.getSubCategoryById(id);
   
         if (!subCategory) {
           throw new NotFoundException("SubCategory", id)
         }
   
-        const { name, description, categoryId } = req.body;
-        if (name) {
-          subCategory.name = name;
-        }
-        if (description) {
-          subCategory.description = description;
-        }
-        if (categoryId) {
-          subCategory.categoryId = categoryId;
-        }
-        subCategory.updatedAt = new Date();
-  
-        const subCategoryDTO1 = subCategoryMapper.toDTO(subCategory);
-  
-        const updatedSubCategory = await subCategoryUseCase.updateSubCategory(
-          dto.toUpdateData(subCategoryDTO1)
-        );
+        const updatedSubCategory = await subCategoryUseCase.updateSubCategory(obj);
+        const subCategoryDto = subCategoryMapper.toDTO(updatedSubCategory);
   
         res.json({
-          data: updatedSubCategory as any,
+          data: subCategoryDto,
           message: "SubCategory Updated Successfully!",
           validationErrors: [],
           success: true,
@@ -176,12 +170,10 @@ export class SubCategoriesController {
         throw new NotFoundException("SubCategory", id);
       }
 
-      const subCategoryDTO = subCategoryMapper.toDTO(subCategory);
-
       await subCategoryUseCase.deleteSubCategory(id);
 
       res.status(204).json({
-        message: `${subCategoryDTO.name}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null,

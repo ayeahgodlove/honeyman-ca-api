@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IPayment,
   IPaymentResponse,
+  emptyPayment,
 } from "../../domain/models/payment";
 import { PaymentUseCase } from "../../domain/usecases/payment.usecase";
 import { PaymentRepository } from "../../data/repositories/impl/payment.repository";
@@ -31,10 +33,9 @@ export class PaymentsController {
       try {
         
         const paymentResponse = await paymentUseCase.createPayment(dto.toData());
-        const paymentDTO = paymentMapper.toDTO(paymentResponse) //convert entity to DTO
   
         res.status(201).json({
-          data: paymentResponse as any,
+          data: paymentResponse.toJSON<IPayment>(),
           message: "Payment created Successfully!",
           validationErrors: [],
           success: true,
@@ -56,9 +57,10 @@ export class PaymentsController {
   ): Promise<void> {
     try {
 
-      const categories = await paymentUseCase.getAll();
+      const payments = await paymentUseCase.getAll();
+      const paymentsDTO = paymentMapper.toDTOs(payments);
       res.json({
-        data: categories as any,
+        data: paymentsDTO,
         message: "Success",
         validationErrors: [],
         success: true,
@@ -85,7 +87,8 @@ export class PaymentsController {
       if (!payment) {
         throw new NotFoundException("Payment", id);
       }
-      const paymentDTO = paymentMapper.toDTO(payment)
+      const paymentDTO = paymentMapper.toDTO(payment);
+      
       res.json({
         data: paymentDTO,
         message: "Success",
@@ -120,26 +123,25 @@ export class PaymentsController {
     else {
       try {
         const id = req.params.id;
-      
+
+        const obj: IPayment = {
+          ...emptyPayment,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
+        
         const payment = await paymentUseCase.getPaymentById(id);
         
         if (!payment) {
           throw new NotFoundException("Payment", id);
         }
   
-        payment.amount = dto.amount;
-        payment.orderId = dto.orderId;
-        payment.userId = dto.userId;
-        payment.status = dto.status;
-        payment.updatedAt = new Date();
-  
-        const paymentDTO1 = paymentMapper.toDTO(payment)
-  
-        const updatedPayment = await paymentUseCase.updatePayment(dto.toUpdateData(paymentDTO1));
-        const paymentDTO2 = paymentMapper.toDTO(updatedPayment);
+        const updatedPayment = await paymentUseCase.updatePayment(obj);
+        const paymentDto = paymentMapper.toDTO(updatedPayment);
   
         res.json({
-          data: paymentDTO2,
+          data: paymentDto,
           message: "Payment Updated Successfully!",
           validationErrors: [],
           success: true,
@@ -168,12 +170,10 @@ export class PaymentsController {
           throw new NotFoundException("Payment", id);
       }
 
-      const paymentDTO = paymentMapper.toDTO(payment)
-
       await paymentUseCase.deletePayment(id);
 
       res.status(204).json({
-        message: `${paymentDTO.id}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null

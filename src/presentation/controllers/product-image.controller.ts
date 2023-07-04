@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  IProductImage,
   IProductImageResponse,
+  emptyProductImage,
 } from "../../domain/models/product-image";
 import { ProductImageUseCase } from "../../domain/usecases/product-image.usecase";
 import { ProductImageRepository } from "../../data/repositories/impl/product-image.repository";
@@ -14,7 +16,7 @@ const productImageRepository = new ProductImageRepository();
 const productImageUseCase = new ProductImageUseCase(productImageRepository);
 const productImageMapper = new ProductImageMapper();
 
-export class CategoriesController {
+export class ProductImagesController {
   async createProductImage(req: Request, res: Response<IProductImageResponse>): Promise<void> {
     const dto = new ProductImageRequestDto(req.body);
     const validationErrors = await validate(dto);
@@ -31,10 +33,9 @@ export class CategoriesController {
       try {
         
         const productImageResponse = await productImageUseCase.createProductImage(dto.toData());
-        const productImageDTO = productImageMapper.toDTO(productImageResponse) //convert entity to DTO
   
         res.status(201).json({
-          data: productImageResponse as any,
+          data: productImageResponse.toJSON<IProductImage>(),
           message: "Product Image created Successfully!",
           validationErrors: [],
           success: true,
@@ -56,9 +57,10 @@ export class CategoriesController {
   ): Promise<void> {
     try {
 
-      const categories = await productImageUseCase.getAll();
+      const productImages = await productImageUseCase.getAll();
+      const productImagesDTO = productImageMapper.toDTOs(productImages);
       res.json({
-        data: categories as any,
+        data: productImagesDTO,
         message: "Success",
         validationErrors: [],
         success: true,
@@ -120,26 +122,24 @@ export class CategoriesController {
     else {
       try {
         const id = req.params.id;
+
+        const obj: IProductImage = {
+          ...emptyProductImage,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
       
         const productImage = await productImageUseCase.getProductImageById(id);
         
         if (!productImage) {
           throw new NotFoundException("Product Image", id);
         }
-  
-        productImage.name = dto.name;
-        productImage.productId = dto.productId;
-        productImage.shortDescription = dto.shortDescription;
-        productImage.url = dto.url;
-        productImage.updatedAt = new Date();
-  
-        const productImageDTO1 = productImageMapper.toDTO(productImage)
-  
-        const updatedProductImage = await productImageUseCase.updateProductImage(dto.toUpdateData(productImageDTO1));
-        const productImageDTO2 = productImageMapper.toDTO(updatedProductImage);
+        const updatedProductImage = await productImageUseCase.updateProductImage(obj);
+        const productImageDTO = productImageMapper.toDTO(updatedProductImage);
   
         res.json({
-          data: productImageDTO2,
+          data: productImageDTO,
           message: "Product Image Updated Successfully!",
           validationErrors: [],
           success: true,
@@ -168,12 +168,10 @@ export class CategoriesController {
           throw new NotFoundException("ProductImage", id);
       }
 
-      const productImageDTO = productImageMapper.toDTO(productImage)
-
       await productImageUseCase.deleteProductImage(id);
 
       res.status(204).json({
-        message: `${productImageDTO.name}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
         data: null

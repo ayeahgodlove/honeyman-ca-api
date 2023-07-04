@@ -17,6 +17,6 @@ export const emptyProductImage: IProductImage = {
 };
 
 export interface IProductImageResponse extends IBaseResponse {
-  data: IProductImage | null;
+  data: IProductImage | null | IProductImage[];
   token?: string
 }

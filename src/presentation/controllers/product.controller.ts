@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import {
-  IProduct,
-  IProductResponse,
-} from "../../domain/models/product";
+import { IProduct, IProductResponse, emptyProduct } from "../../domain/models/product";
 import { ProductUseCase } from "../../domain/usecases/product.usecase";
 import { ProductRepository } from "../../data/repositories/impl/product.repository";
 import { ProductMapper } from "../mappers/product-mapper";
@@ -16,23 +13,26 @@ const productUseCase = new ProductUseCase(productRepository);
 const productMapper = new ProductMapper();
 
 export class ProductsController {
-  async createProduct(req: Request, res: Response<IProductResponse>): Promise<void> {
+  async createProduct(
+    req: Request,
+    res: Response<IProductResponse>
+  ): Promise<void> {
     const dto = new ProductRequestDto(req.body);
     const validationErrors = await validate(dto);
 
     if (validationErrors.length > 0) {
-      res.status(400).json({ 
+      res.status(400).json({
         validationErrors: displayValidationErrors(validationErrors) as any,
         success: false,
         data: null,
-        message: "Attention!"
+        message: "Attention!",
       });
-    }
-    else {
+    } else {
       try {
-        
-        const productResponse = await productUseCase.createProduct(dto.toData());
-  
+        const productResponse = await productUseCase.createProduct(
+          dto.toData()
+        );
+
         res.status(201).json({
           data: productResponse.toJSON<IProduct>(),
           message: "Product created Successfully!",
@@ -50,15 +50,16 @@ export class ProductsController {
     }
   }
 
-  async getAll(
-    req: Request,
-    res: Response<IProduct[] | IProductResponse>
-  ): Promise<void> {
+  async getAll(req: Request, res: Response<IProductResponse>): Promise<void> {
     try {
-
       const products = await productUseCase.getAll();
       const productsDTO = productMapper.toDTOs(products);
-      res.json(productsDTO);
+      res.json({
+        data: productsDTO,
+        message: "Success",
+        validationErrors: [],
+        success: true,
+      });
     } catch (error: any) {
       res.status(400).json({
         data: null,
@@ -77,11 +78,11 @@ export class ProductsController {
       const id = req.params.id;
 
       const product = await productUseCase.getProductById(id);
-      
+
       if (!product) {
         throw new NotFoundException("Product", id);
       }
-      const productDTO = productMapper.toDTO(product)
+      const productDTO = productMapper.toDTO(product);
       res.json({
         data: productDTO,
         message: "Success",
@@ -102,44 +103,36 @@ export class ProductsController {
     req: Request,
     res: Response<IProductResponse>
   ): Promise<void> {
-    const dto = new ProductRequestDto(req.body)
+    const dto = new ProductRequestDto(req.body);
     const validationErrors = await validate(dto);
 
     if (validationErrors.length > 0) {
-      res.status(400).json({ 
+      res.status(400).json({
         validationErrors: displayValidationErrors(validationErrors) as any,
         success: false,
         data: null,
-        message: "Attention!"
+        message: "Attention!",
       });
-    }
-    else {
+    } else {
       try {
         const id = req.params.id;
-      
-        const product = await productUseCase.getProductById(id);
+
+        const obj: IProduct = {
+          ...emptyProduct,
+          ...req.body,
+          ...dto,
+          id: id,
+        };
         
+        const product = await productUseCase.getProductById(id);
+
         if (!product) {
           throw new NotFoundException("Product", id);
         }
-  
-        product.name = dto.name;
-        product.description = dto.description;
-        product.shortDescription = dto.shortDescription;
-        product.categoryId = dto.categoryId;
-        product.subCategoryId = dto.subCategoryId;
-        product.quantity = dto.quantity;
-        product.amount = dto.amount;
-  
-        const obj: IProduct = {
-          ...req.body,
-          ...product, 
-          id: id,
-        };
-  
+
         const updatedProduct = await productUseCase.updateProduct(obj);
         const productDTO = productMapper.toDTO(updatedProduct);
-  
+
         res.json({
           data: productDTO,
           message: "Product Updated Successfully!",
@@ -167,28 +160,24 @@ export class ProductsController {
       const product = await productUseCase.getProductById(id);
 
       if (!product) {
-          throw new NotFoundException("Product", id);
+        throw new NotFoundException("Product", id);
       }
-
-      const productDTO = productMapper.toDTO(product)
 
       await productUseCase.deleteProduct(id);
 
       res.status(204).json({
-        message: `${productDTO.name}`,
+        message: `Operation successfully completed!`,
         validationErrors: [],
         success: true,
-        data: null
+        data: null,
       });
     } catch (error: any) {
-      res
-        .status(400)
-        .json({
-          message: error.message,
-          data: null,
-          validationErrors: [error],
-          success: true,
-        });
+      res.status(400).json({
+        message: error.message,
+        data: null,
+        validationErrors: [error],
+        success: true,
+      });
     }
   }
 }
