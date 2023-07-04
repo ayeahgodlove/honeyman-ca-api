@@ -1,6 +1,7 @@
 import { User } from "../../entities/user";
 import { IUserRepository } from "../contracts/iuser.repository";
 import { IUser } from "../../../domain/models/user";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class UserRepository implements IUserRepository {
     /**
@@ -29,6 +30,9 @@ export class UserRepository implements IUserRepository {
     async findById(id: string): Promise<User | null>{
       try {
         const userItem = await User.findByPk(id);
+        if (!userItem) {
+          throw new NotFoundException("User", id);
+        }
         return userItem;
       } catch (error) {
         throw error;
@@ -67,8 +71,12 @@ export class UserRepository implements IUserRepository {
      * returns void
      */
     async update(user: IUser): Promise<User> {
+      const { id } = user;
       try {
         const userItem: any = await User.findByPk(user.id);
+        if (!userItem) {
+          throw new NotFoundException("User", id);
+        }
         return await userItem?.update(user);
       } catch (error) {
         throw error;
@@ -83,6 +91,9 @@ export class UserRepository implements IUserRepository {
     async delete(id: string): Promise<void> {
       try {
         const userItem = await User.findByPk(id);
+        if (!userItem) {
+          throw new NotFoundException("User", id);
+        }
         await userItem?.destroy({
           force: true,
         });

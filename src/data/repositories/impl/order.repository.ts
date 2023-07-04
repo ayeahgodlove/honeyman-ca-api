@@ -1,6 +1,7 @@
 import { Order } from "../../entities/order";
 import { IOrderRepository } from "../contracts/iorder.repository";
 import { IOrder } from "../../../domain/models/order";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class OrderRepository implements IOrderRepository {
   /**
@@ -15,7 +16,7 @@ export class OrderRepository implements IOrderRepository {
    */
   async create(order: IOrder): Promise<Order> {
     try {
-      return await Order.create<Order>(order as any);
+      return await Order.create<Order>({...order});
     } catch (error) {
       throw error;
     }
@@ -29,6 +30,9 @@ export class OrderRepository implements IOrderRepository {
   async findById(id: string): Promise<Order | null> {
     try {
       const orderItem = await Order.findByPk(id);
+      if (!orderItem) {
+        throw new NotFoundException("Order", id);
+      }
       return orderItem;
     } catch (error) {
       throw error;
@@ -43,6 +47,9 @@ export class OrderRepository implements IOrderRepository {
   async findByOrderNo(orderNo: string): Promise<Order | null> {
     try {
       const orderItem = await Order.findOne({ where: { orderNo } });
+      if (!orderItem) {
+        throw new NotFoundException("Order", orderNo);
+      }
       return orderItem;
     } catch (error) {
       throw error;
@@ -67,26 +74,15 @@ export class OrderRepository implements IOrderRepository {
    * returns void
    */
   async update(order: IOrder): Promise<Order> {
-    const {
-      id,
-      userId,
-      productId,
-      unitPrice,
-      total,
-      status,
-      orderNo,
-    } = order;
+    const { id } = order;
     try {
-      const orderItem: any = await Order.findByPk(id);
-      return await orderItem?.update({
-        id,
-        userId,
-        productId,
-        unitPrice,
-        total,
-        status,
-        orderNo,
-      });
+      const orderItem = await Order.findByPk(id);
+      
+      if (!orderItem) {
+        throw new NotFoundException("Order", id.toString());
+      }
+
+      return await orderItem?.update(order);
     } catch (error) {
       throw error;
     }
@@ -100,6 +96,9 @@ export class OrderRepository implements IOrderRepository {
   async delete(id: string): Promise<void> {
     try {
       const orderItem = await Order.findByPk(id);
+      if (!orderItem) {
+        throw new NotFoundException("Order", id);
+      }
       await orderItem?.destroy({
         force: true,
       });

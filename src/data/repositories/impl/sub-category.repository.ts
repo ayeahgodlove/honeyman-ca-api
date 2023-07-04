@@ -1,6 +1,7 @@
 import { SubCategory } from "../../entities/sub-category";
 import { ISubCategoryRepository } from "../contracts/isub-category.repository";
 import { ISubCategory } from "../../../domain/models/category";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class SubCategoryRepository implements ISubCategoryRepository {
     /**
@@ -29,6 +30,9 @@ export class SubCategoryRepository implements ISubCategoryRepository {
     async findById(id: string): Promise<SubCategory | null>{
       try {
         const subCategoryItem = await SubCategory.findByPk(id);
+        if (!subCategoryItem) {
+          throw new NotFoundException("Sub Category", id);
+        }
         return subCategoryItem;
       } catch (error) {
         throw error;
@@ -67,15 +71,13 @@ export class SubCategoryRepository implements ISubCategoryRepository {
      * returns void
      */
     async update(subCategory: ISubCategory): Promise<SubCategory> {
-      const {id, name, description, categoryId} = subCategory;
+      const {id} = subCategory;
       try {
         const subCategoryItem: any = await SubCategory.findByPk(id);
-        return await subCategoryItem?.update({
-          id,
-          categoryId,
-          name,
-          description,
-        });
+        if (!subCategoryItem) {
+          throw new NotFoundException("Sub Category", id);
+        }
+        return await subCategoryItem?.update(subCategory);
       } catch (error) {
         throw error;
       }
@@ -89,6 +91,9 @@ export class SubCategoryRepository implements ISubCategoryRepository {
     async delete(id: string): Promise<void> {
       try {
         const subCategoryItem = await SubCategory.findByPk(id);
+        if (!subCategoryItem) {
+          throw new NotFoundException("Sub Category", id);
+        }
         await subCategoryItem?.destroy({
           force: true,
         });

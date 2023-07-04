@@ -1,6 +1,7 @@
 import { ProductImage } from "../../entities/product-image";
 import { IProductImageRepository } from "../contracts/iproduct-image.repository";
 import { IProductImage } from "../../../domain/models/product-image";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class ProductImageRepository implements IProductImageRepository {
   /**
@@ -29,6 +30,10 @@ export class ProductImageRepository implements IProductImageRepository {
   async findById(id: string): Promise<ProductImage | null> {
     try {
       const productImageItem = await ProductImage.findByPk(id);
+            
+      if (!productImageItem) {
+        throw new NotFoundException("Product Image", id.toString());
+      }
       return productImageItem;
     } catch (error) {
       throw error;
@@ -67,17 +72,16 @@ export class ProductImageRepository implements IProductImageRepository {
    * returns void
    */
   async update(productImage: IProductImage): Promise<ProductImage> {
-    const { id, name, shortDescription, productId, url } =
+    const { id } =
       productImage;
     try {
       const productImageItem: any = await ProductImage.findByPk(id);
-      return await productImageItem?.update({
-        id,
-        name,
-        shortDescription,
-        productId,
-        url,
-      });
+      
+      if (!productImageItem) {
+        throw new NotFoundException("Product Image", id.toString());
+      }
+
+      return await productImageItem?.update(productImage);
     } catch (error) {
       throw error;
     }
@@ -91,6 +95,9 @@ export class ProductImageRepository implements IProductImageRepository {
   async delete(id: string): Promise<void> {
     try {
       const productImageItem = await ProductImage.findByPk(id);
+      if (!productImageItem) {
+        throw new NotFoundException("Product Image", id);
+      }
       await productImageItem?.destroy({
         force: true,
       });

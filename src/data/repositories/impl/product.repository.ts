@@ -1,6 +1,7 @@
 import { Product } from "../../entities/product";
 import { IProductRepository } from "../contracts/iproduct.repository";
 import { IProduct } from "../../../domain/models/product";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class ProductRepository implements IProductRepository {
   /**
@@ -29,6 +30,9 @@ export class ProductRepository implements IProductRepository {
   async findById(id: string): Promise<Product | null> {
     try {
       const productItem = await Product.findByPk(id);
+      if (!productItem) {
+        throw new NotFoundException("Product", id.toString());
+      }
       return productItem;
     } catch (error) {
       throw error;
@@ -67,28 +71,14 @@ export class ProductRepository implements IProductRepository {
    * returns void
    */
   async update(product: IProduct): Promise<Product> {
-    const {
-      id,
-      name,
-      amount,
-      shortDescription,
-      description,
-      categoryId,
-      quantity,
-      subCategoryId,
-    } = product;
+    const { id } = product;
     try {
       const productItem: any = await Product.findByPk(id);
-      return await productItem?.update({
-        id,
-        name,
-        amount,
-        shortDescription,
-        quantity,
-        description,
-        categoryId,
-        subCategoryId,
-      });
+      
+      if (!productItem) {
+        throw new NotFoundException("Product", id.toString());
+      }
+      return await productItem?.update(product);
     } catch (error) {
       throw error;
     }
@@ -102,6 +92,9 @@ export class ProductRepository implements IProductRepository {
   async delete(id: string): Promise<void> {
     try {
       const productItem = await Product.findByPk(id);
+      if (!productItem) {
+        throw new NotFoundException("Product", id.toString());
+      }
       await productItem?.destroy({
         force: true,
       });

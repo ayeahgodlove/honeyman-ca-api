@@ -1,6 +1,7 @@
 import { Category } from "../../entities/category";
 import { ICategoryRepository } from "../contracts/icategory.repository";
 import { ICategory } from "../../../domain/models/category";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class CategoryRepository implements ICategoryRepository {
     /**
@@ -15,7 +16,7 @@ export class CategoryRepository implements ICategoryRepository {
      */
     async create(category: ICategory): Promise<Category> {
      try {
-       return await Category.create<Category>(category as any);
+       return await Category.create<Category>({...category});
      } catch (error) {
        throw error;
      }
@@ -29,6 +30,9 @@ export class CategoryRepository implements ICategoryRepository {
     async findById(id: string): Promise<Category | null>{
       try {
         const categoryItem = await Category.findByPk(id);
+        if (!categoryItem) {
+          throw new NotFoundException("Category", id);
+        }
         return categoryItem;
       } catch (error) {
         throw error;
@@ -67,14 +71,15 @@ export class CategoryRepository implements ICategoryRepository {
      * returns void
      */
     async update(category: ICategory): Promise<Category> {
-      const {id, name, description} = category;
+      const {id} = category;
       try {
-        const categoryItem: any = await Category.findByPk(id);
-        return await categoryItem?.update({
-          id,
-          name,
-          description,
-        });
+        const categoryItem = await Category.findByPk(id);
+
+        if (!categoryItem) {
+          throw new NotFoundException("Category", id.toString());
+        }
+
+        return await categoryItem?.update(category);
       } catch (error) {
         throw error;
       }
@@ -88,6 +93,9 @@ export class CategoryRepository implements ICategoryRepository {
     async delete(id: string): Promise<void> {
       try {
         const categoryItem = await Category.findByPk(id);
+        if (!categoryItem) {
+          throw new NotFoundException("Category", id);
+        }
         await categoryItem?.destroy({
           force: true,
         });

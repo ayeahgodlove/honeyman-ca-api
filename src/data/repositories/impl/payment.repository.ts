@@ -1,6 +1,7 @@
 import { Payment } from "../../entities/payment";
 import { IPaymentRepository } from "../contracts/ipayment.repository";
 import { IPayment } from "../../../domain/models/payment";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class PaymentRepository implements IPaymentRepository {
   /**
@@ -29,6 +30,9 @@ export class PaymentRepository implements IPaymentRepository {
   async findById(id: string): Promise<Payment | null> {
     try {
       const paymentItem = await Payment.findByPk(id);
+      if (!paymentItem) {
+        throw new NotFoundException("Payment", id);
+      }
       return paymentItem;
     } catch (error) {
       throw error;
@@ -43,6 +47,9 @@ export class PaymentRepository implements IPaymentRepository {
   async findByOrderId(orderId: string): Promise<Payment | null> {
     try {
       const paymentItem = await Payment.findOne({ where: { orderId } });
+      if (!paymentItem) {
+        throw new NotFoundException("Payment", orderId);
+      }
       return paymentItem;
     } catch (error) {
       throw error;
@@ -67,16 +74,13 @@ export class PaymentRepository implements IPaymentRepository {
    * returns void
    */
   async update(payment: IPayment): Promise<Payment> {
-    const { id, amount, orderId, status, userId } = payment;
+    const { id } = payment;
     try {
       const paymentItem: any = await Payment.findByPk(id);
-      return await paymentItem?.update({
-        id,
-        amount,
-        orderId,
-        userId,
-        status,
-      });
+      if (!paymentItem) {
+        throw new NotFoundException("Payment", id);
+      }
+      return await paymentItem?.update(payment);
     } catch (error) {
       throw error;
     }
@@ -90,6 +94,9 @@ export class PaymentRepository implements IPaymentRepository {
   async delete(id: string): Promise<void> {
     try {
       const paymentItem = await Payment.findByPk(id);
+      if (!paymentItem) {
+        throw new NotFoundException("Payment", id);
+      }
       await paymentItem?.destroy({
         force: true,
       });

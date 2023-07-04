@@ -1,6 +1,7 @@
 import { Review } from "../../entities/review";
 import { IReviewRepository } from "../contracts/ireview.repository";
 import { IReview } from "../../../domain/models/review";
+import { NotFoundException } from "../../../shared/exceptions/not-found.exception";
 
 export class ReviewRepository implements IReviewRepository {
     /**
@@ -29,6 +30,9 @@ export class ReviewRepository implements IReviewRepository {
     async findById(id: string): Promise<Review | null>{
       try {
         const reviewItem = await Review.findByPk(id);
+        if (!reviewItem) {
+          throw new NotFoundException("Review", id);
+        }
         return reviewItem;
       } catch (error) {
         throw error;
@@ -53,16 +57,13 @@ export class ReviewRepository implements IReviewRepository {
      * returns void
      */
     async update(review: IReview): Promise<Review> {
-      const {id, rating, userId, productId, description} = review;
+      const {id} = review;
       try {
         const reviewItem: any = await Review.findByPk(id);
-        return await reviewItem?.update({
-          id,
-          rating,
-          userId,
-          productId,
-          description,
-        });
+        if (!reviewItem) {
+          throw new NotFoundException("Review", id);
+        }
+        return await reviewItem?.update(review);
       } catch (error) {
         throw error;
       }
@@ -76,6 +77,9 @@ export class ReviewRepository implements IReviewRepository {
     async delete(id: string): Promise<void> {
       try {
         const reviewItem = await Review.findByPk(id);
+        if (!reviewItem) {
+          throw new NotFoundException("Review", id);
+        }
         await reviewItem?.destroy({
           force: true,
         });
