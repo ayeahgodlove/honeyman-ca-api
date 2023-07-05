@@ -15,6 +15,7 @@ import { uuid } from "uuidv4";
 import { ProductImage } from "./product-image";
 import { Review } from "./review";
 import { IProduct } from "../../domain/models/product";
+import { Store } from "./store";
 
 @Table({
   timestamps: true,
@@ -40,6 +41,17 @@ export class Product extends Model<IProduct> {
   })
   @ForeignKey(() => Category)
   categoryId!: string;
+
+  @ForeignKey(() => Store) // foreign key
+  @Column({
+    type: DataType.STRING(50),
+    allowNull: false,
+    references: {
+      model: Store,
+      key: "id",
+    },
+  })
+  storeId!: string;
 
   @Column({
     type: DataType.STRING(50),
@@ -100,6 +112,9 @@ export class Product extends Model<IProduct> {
   // one-to-one relationships
   @BelongsTo(() => Category)
   category!: Category;
+
+  @BelongsTo(() => Store)
+  store!: Store;
 
   @BelongsTo(() => SubCategory)
   subCategory!: SubCategory;
