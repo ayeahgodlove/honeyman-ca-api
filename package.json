@@ -11,13 +11,17 @@
     "init:db": "npx sequelize init --force",
     "migrate:up": "sequelize-cli db:migrate",
     "migrate:undo": "sequelize-cli db:migrate:undo",
-    "practice": "ts-node -T -r tsconfig-paths/register ./migration-builder.ts",
-    "test": "mocha --check-leaks -r ts-node/register -r tsconfig-paths/register \"src/tests/**/*.spec.ts\""
+    "migration:gen": "ts-node -T -r tsconfig-paths/register ./migration-builder.ts",
+    "test": "mocha --check-leaks -r ts-node/register -r tsconfig-paths/register \"src/tests/**/*.spec.ts\"",
+    "generate:seed": "sequelize seed:generate --name",
+    "seed": "sequelize db:seed:all",
+    "generate:seed:file": "sequelize-cli db:seed --seed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/connect-redis": "^0.0.20",
     "@types/redis": "^4.0.11",
     "bcrypt": "^5.1.0",

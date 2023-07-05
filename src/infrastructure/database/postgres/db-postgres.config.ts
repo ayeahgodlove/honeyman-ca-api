@@ -15,6 +15,8 @@ import { User } from "../../../data/entities/user";
 import * as dotenv from "dotenv";
 import { Review } from "../../../data/entities/review";
 import { ProductImage } from "../../../data/entities/product-image";
+import { Branch } from "../../../data/entities/branch";
+import { Store } from "../../../data/entities/store";
 dotenv.config();
 
 export class PostgresDbConfig {
@@ -33,6 +35,8 @@ export class PostgresDbConfig {
       models: [
         User,
         SubCategory,
+        Branch,
+        Store,
         Order,
         Product,
         Category,
